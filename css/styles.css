@@ -100,6 +100,25 @@ nav h1 a {
   color: #01447e;
   text-decoration: underline;
 }
+
+/* Skip Link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  padding: 8px 12px;
+  background-color: #f18200;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  border-bottom-right-radius: 4px;
+  transition: all 0.2s ease;
+}
+.skip-link:focus {
+  top: 0;
+  color: #fff;
+}
+
 /* ====================== Map ====================== */
 #map {
   height: 400px;
@@ -197,7 +216,7 @@ nav h1 a {
   font-size: 11pt;
 }
 #restaurants-list li a {
-  background-color: orange;
+  background-color: #f3a006;
   /* border-bottom: 3px solid #eee; */
   color: #fff;
   display: inline-block;
@@ -210,7 +229,7 @@ nav h1 a {
   text-decoration: none;
   text-transform: uppercase;
   border-radius: 4px;
-  box-shadow: 0 3px 15px rgba(255, 166, 0, 0.5);
+  box-shadow: 0 3px 15px rgba(243, 160, 6, 0.5);
   transition: all 0.25s ease;
 }
 #restaurants-list li a:hover {
@@ -357,7 +376,7 @@ Did not use class selectors to not deal with JS */
   font-size: 11pt;
 }
 
-
+/* Media queries */
 @media screen and (max-width: 650px) {
   .filter-options {
     flex-wrap: wrap;
@@ -405,6 +424,14 @@ Did not use class selectors to not deal with JS */
   }
 }
 
+@media screen and (max-width: 326px) {
+  .filter-options select {
+    margin: 12px 10px 3px;
+  }
+  .filter-options select:last-child {
+    margin: 3px 10px 5px;
+  }
+}
 
 /* Mapbox overrides */
 .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
