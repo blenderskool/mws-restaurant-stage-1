@@ -311,7 +311,6 @@ nav h1 a {
 }
 #restaurant-container, #reviews-container {
   border-bottom: 1px solid #d9d9d9;
-  border-top: 1px solid #fff;
   padding: 140px 3% 30px;
   width: 44%;
 }
@@ -408,6 +407,7 @@ Did not use class selectors to not deal with JS */
   
   #breadcrumb {
     width: 100%;
+    padding: 15px;
   }
   
   #restaurant-container,
