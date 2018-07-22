@@ -1,6 +1,5 @@
 const gulp = require('gulp');
 const babel = require('gulp-babel');
-const concat = require('gulp-concat');
 const cssmin = require('gulp-cssmin');
 const htmlmin = require('gulp-htmlmin');
 
@@ -13,7 +12,6 @@ gulp.task('scripts', function() {
    * Bundles actual app scripts
    */
   gulp.src('src/js/*.js')
-    .pipe(concat('app.js'))
     .pipe(babel())
     .pipe(gulp.dest('dist/js'));
 
@@ -30,7 +28,6 @@ gulp.task('scripts', function() {
  */
 gulp.task('styles', function () {
   gulp.src('src/css/*.css')
-    .pipe(concat('styles.css'))
     .pipe(cssmin())
     .pipe(gulp.dest('dist/css'));
 });
