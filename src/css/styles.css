@@ -19,16 +19,18 @@ ul, li {
 	color: #333;
 }
 a {
-	color: orange;
+	color: #6ab7ff;
 	text-decoration: none;
 }
 a:hover, a:focus {
 	color: #3397db;
   text-decoration: none;
-  outline-color: #032c50;
 }
 a:focus {
   text-decoration: underline;
+}
+a:focus, select:focus {
+  outline: 2px solid rgba(255, 68, 0, 0.7);
 }
 a img{
 	border: none 0px #fff;
@@ -45,7 +47,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   min-height: 100%;
 }
 #footer {
-  background-color: #252831;
+  background-color: #161A27;
   color: #aaa;
   font-size: 8pt;
   letter-spacing: 1px;
@@ -57,13 +59,19 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 nav {
   width: 100%;
   height: 80px;
-  background-color: #252831;
-  text-align:center;
+  background-color: #161A27;
   display: flex;
+  flex-wrap: wrap;
 }
 nav h1 {
   margin: auto;
+  flex-basis: 100%;
+  height: 80px;
   font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 nav h1 a {
   color: #fff;
@@ -111,7 +119,7 @@ nav h1 a {
   top: -40px;
   left: 0;
   padding: 8px 12px;
-  background-color: #e66c00;
+  background-color: #01339C;
   color: #fff;
   font-weight: 700;
   font-size: 1rem;
@@ -206,7 +214,7 @@ nav h1 a {
   min-width: 100%;
 }
 #restaurants-list li h1 {
-  color: #e66c00;
+  color: #01339C;
   font-family: 'Nunito', Arial, sans-serif;
   font-size: 14pt;
   font-weight: 700;
@@ -220,7 +228,7 @@ nav h1 a {
   font-size: 11pt;
 }
 #restaurants-list li a {
-  background-color: #e66c00;
+  background-color: #01339C;
   /* border-bottom: 3px solid #eee; */
   color: #fff;
   display: inline-block;
@@ -233,7 +241,7 @@ nav h1 a {
   text-decoration: none;
   text-transform: uppercase;
   border-radius: 4px;
-  box-shadow: 0 3px 15px rgba(230, 108, 0, 0.5);
+  box-shadow: 0 3px 20px rgba(1, 51, 156, 0.3);
   transition: all 0.25s ease;
 }
 #restaurants-list li a:hover {
@@ -281,7 +289,7 @@ nav h1 a {
   right: 50%;
 }
 #restaurant-name {
-  color: #e66c00;
+  color: #01339C;
   font-family: 'Nunito', Arial, sans-serif;
   font-size: 22pt;
   font-weight: 700;
@@ -301,7 +309,7 @@ nav h1 a {
   margin: 10px 0px;
 }
 #restaurant-cuisine {
-  background-color: #252831;
+  background-color: #161A27;
   color: #ddd;
   font-size: 12pt;
   letter-spacing: 10px;
@@ -321,8 +329,8 @@ nav h1 a {
 #reviews-container {
   padding: 15px 3% 80px;
 }
-#reviews-container h2 {
-  color: #f58500;
+#reviews-container h3 {
+  color: #01339C;
   font-size: 22pt;
   font-weight: 600;
   letter-spacing: -1px;
@@ -363,19 +371,31 @@ Did not use class selectors to not deal with JS */
   font-size: 1.2rem;
   font-weight: 700;
 }
+#reviews-list li p:nth-child(2),
+#reviews-list li p:nth-child(3) {
+  color: #666;
+}
 #reviews-list li p:nth-child(2) {
   margin: -12px 0 0;
   line-height: normal;
 }
 #reviews-list li p:nth-child(3) {
-  margin: -2px 0 20px;
-}
-#reviews-list li p:nth-child(2),
-#reviews-list li p:nth-child(3) {
-  color: #666;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  background-color: #01339C;
+  color: #fff;
+  font-size: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #reviews-list li p:last-child {
-  margin: 0;
+  margin: 20px 0 0;
   font-size: 11pt;
 }
 
@@ -441,4 +461,9 @@ Did not use class selectors to not deal with JS */
 .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
   border: 0 !important;
   box-shadow: 3px 3px 20px rgba(20, 20, 20, 0.2) !important;
+}
+
+
+.leaflet-control-attribution a {
+  color: #01339C;
 }
