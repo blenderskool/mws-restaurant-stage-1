@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const babel = require('gulp-babel');
 const cssmin = require('gulp-cssmin');
 const htmlmin = require('gulp-htmlmin');
+const webp = require('gulp-webp');
 
 /**
  * Prepares the script files for production
@@ -51,6 +52,16 @@ gulp.task('html', function() {
  * Prepares the images for production
  */
 gulp.task('images', function() {
+  /**
+   * WebP image files created
+   */
+  gulp.src('src/img/**/*')
+    .pipe(webp())
+    .pipe(gulp.dest('dist/img'));
+
+  /**
+   * Default format files are copied
+   */
   gulp.src('src/img/**/*')
     .pipe(gulp.dest('dist/img'));
 });
