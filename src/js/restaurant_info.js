@@ -6,6 +6,8 @@ var newMap;
  */
 document.addEventListener('DOMContentLoaded', (event) => {  
   initMap();
+
+  registerSW() // SW registered
 });
 
 /**

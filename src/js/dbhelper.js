@@ -190,3 +190,13 @@ class DBHelper {
 
 }
 
+
+/**
+ * Registers a service worker for the app
+ */
+let registerSW = () => {
+  if (!navigator.serviceWorker) return;
+
+  navigator.serviceWorker.register('/sw.js')
+}
+

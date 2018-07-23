@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
 
-  // registerSW() // SW registered
+  registerSW() // SW registered
 });
 
 /**
@@ -234,39 +234,3 @@ let addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 } */
-
-
-/**
- * Registers a service worker for the app
- */
-let registerSW = () => {
-  if (!navigator.serviceWorker) return;
-
-  navigator.serviceWorker.register('/sw.js')
-  .then(reg => {
-    if (!navigator.serviceWorker.controller) return;
-
-    return;
-    if (reg.waiting) {
-      _showSnackBar('Get latest improvements');
-      _initSWUpdateBtn(reg.waiting);
-      return;
-    }
-
-    if (reg.installing) {
-      _trackInstalling(reg.installing);
-      return;
-    }
-
-    reg.addEventListener('updatefound', () => {
-      _trackInstalling(reg.installing);
-    });
-  })
-  .catch(err => {
-    console.log(err);
-  });
-
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    window.location.reload();
-  });
-}
