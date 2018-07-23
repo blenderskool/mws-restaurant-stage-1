@@ -64,9 +64,15 @@ gulp.task('images', function() {
    */
   gulp.src('src/img/**/*')
     .pipe(gulp.dest('dist/img'));
+
+  /**
+   * Copy the app icons
+   */
+  gulp.src('src/icons/**/*')
+    .pipe(gulp.dest('dist/icons'));
 });
 
 gulp.task('default', ['scripts', 'html', 'styles', 'images'], function() {
-  gulp.src('src/*.json')
+  gulp.src('src/*.{json,ico}')
     .pipe(gulp.dest('dist'));
 });
