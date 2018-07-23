@@ -66,4 +66,7 @@ gulp.task('images', function() {
     .pipe(gulp.dest('dist/img'));
 });
 
-gulp.task('default', ['scripts', 'html', 'styles', 'images']);
+gulp.task('default', ['scripts', 'html', 'styles', 'images'], function() {
+  gulp.src('src/*.json')
+    .pipe(gulp.dest('dist'));
+});
