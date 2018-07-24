@@ -50,10 +50,32 @@ class DBHelper {
     /**
      * Error occurred
      */
-    xhr.onerror = () => callback(
-      `Request failed. Returned status of ${xhr.status}`,
-      null
-    );
+    xhr.onerror = () => {
+
+      /**
+       * If there was an error with the request, check if data is available in db
+       */
+      DBHelper.openDatabase()
+      .then(db => {
+        if (!db) return callback(`Request failed. Returned status of ${xhr.status}`, null);
+
+        const store = db.transaction('restaurants').objectStore('restaurants');
+
+        return store.get(parseInt(id));
+      })
+      .then(restaurant => {
+        /**
+         * Return the data if found
+         */
+        if (restaurant) return callback(null, restaurant);
+
+        /**
+         * Fallback error
+         */
+        callback(`Request failed. Returned status of ${xhr.status}`, null);
+      });
+
+    }
 
     xhr.send();
   }
@@ -91,22 +113,69 @@ class DBHelper {
   }
 
   /**
+   * Filters restaurants based on the neighborhood and cuisine
+   */
+  static filterRestaurants(restaurants, cuisine, neighborhood) {
+    let results = restaurants;
+    if (cuisine != 'all') { // filter by cuisine
+      results = results.filter(r => r.cuisine_type == cuisine);
+    }
+    if (neighborhood != 'all') { // filter by neighborhood
+      results = results.filter(r => r.neighborhood == neighborhood);
+    }
+
+    return results;
+  }
+
+  /**
    * Fetch restaurants by a cuisine and a neighborhood with proper error handling.
    */
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
     // Fetch all restaurants
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
-        callback(error, null);
+
+        /**
+         * If there was an error making the request,
+         * check for data in db
+         */
+        DBHelper.openDatabase()
+        .then(db => {
+          if (!db) return callback(error, null);
+
+          const store = db.transaction('restaurants').objectStore('restaurants');
+          return store.getAll();
+        })
+        .then(restaurants =>  {
+          /**
+           * Fallback error
+           */
+          if (!restaurants) return callback(error, null);
+        
+          /**
+           * return the data if found 
+           */
+          callback(null, DBHelper.filterRestaurants(restaurants, cuisine, neighborhood));
+        });
+
+
+
       } else {
-        let results = restaurants
-        if (cuisine != 'all') { // filter by cuisine
-          results = results.filter(r => r.cuisine_type == cuisine);
-        }
-        if (neighborhood != 'all') { // filter by neighborhood
-          results = results.filter(r => r.neighborhood == neighborhood);
-        }
-        callback(null, results);
+
+        /**
+         * Store the data in the database
+         */
+        DBHelper.openDatabase()
+        .then(db => {
+          if (!db) return;
+
+          const tx = db.transaction('restaurants', 'readwrite');
+          const store = tx.objectStore('restaurants');
+
+          restaurants.forEach(restaurant => store.put(restaurant));
+        });
+
+        callback(null, DBHelper.filterRestaurants(restaurants, cuisine, neighborhood));
       }
     });
   }
@@ -118,12 +187,39 @@ class DBHelper {
     // Fetch all restaurants
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
-        callback(error, null);
+
+        /**
+         * We do similar checks for neighborhoods if data is availble
+         * in db
+         */
+        DBHelper.openDatabase()
+        .then(db => {
+          if (!db) return callback(error, null);
+
+          const store = db.transaction('neighborhoods').objectStore('neighborhoods');
+          return store.getAll();
+        })
+        .then(neighborhoods => callback(null, neighborhoods));
+
       } else {
         // Get all neighborhoods from all restaurants
         const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood)
         // Remove duplicates from neighborhoods
         const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i)
+
+        /**
+         * Store data in database on successfull request
+         */
+        DBHelper.openDatabase()
+        .then(db => {
+          if (!db) return;
+
+          const tx = db.transaction('neighborhoods', 'readwrite');
+          const store = tx.objectStore('neighborhoods');
+
+          uniqueNeighborhoods.forEach(neighborhood => store.put(neighborhood, neighborhood));
+        });
+
         callback(null, uniqueNeighborhoods);
       }
     });
@@ -136,12 +232,40 @@ class DBHelper {
     // Fetch all restaurants
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
-        callback(error, null);
+
+        /**
+         * We do similar checks for cuisines if data is availble
+         * in db
+         */
+        DBHelper.openDatabase()
+        .then(db => {
+          if (!db) return callback(error, null);
+
+          const store = db.transaction('cuisines').objectStore('cuisines');
+
+          return store.getAll();
+        })
+        .then(cuisines => callback(null, cuisines));
+
       } else {
         // Get all cuisines from all restaurants
         const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type)
         // Remove duplicates from cuisines
         const uniqueCuisines = cuisines.filter((v, i) => cuisines.indexOf(v) == i)
+
+        /**
+         * Store data in database on successfull request
+         */
+        DBHelper.openDatabase()
+        .then(db => {
+          if (!db) return;
+
+          const tx = db.transaction('cuisines', 'readwrite');
+          const store = tx.objectStore('cuisines');
+
+          cuisines.forEach(cuisine => store.put(cuisine, cuisine));
+        });
+
         callback(null, uniqueCuisines);
       }
     });
@@ -188,6 +312,28 @@ class DBHelper {
     return marker;
   } */
 
+
+  /**
+   * IndexedDB database is opened here using idb
+   */
+  static openDatabase() {
+    if (!navigator.serviceWorker) return Promise.resolve();
+
+    return idb.open('restaurant-reviews', 1, upgradeDB => {
+
+      /**
+       * Create necessary object stores
+       */
+
+      upgradeDB.createObjectStore('restaurants',  {
+        keyPath: 'id'
+      });
+
+      upgradeDB.createObjectStore('neighborhoods');
+      upgradeDB.createObjectStore('cuisines');
+    });
+  }
+
 }
 
 
@@ -197,6 +343,6 @@ class DBHelper {
 let registerSW = () => {
   if (!navigator.serviceWorker) return;
 
-  navigator.serviceWorker.register('/sw.js')
+  navigator.serviceWorker.register('/sw.js');
 }
 
