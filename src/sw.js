@@ -1,8 +1,10 @@
 const staticCache = 'restaurant-static-v1';
 const imgCache = 'restaurant-imgs';
+const mapCache = 'restaurant-maps';
 const allCaches = [
   staticCache,
-  imgCache
+  imgCache,
+  mapCache
 ];
 
 self.addEventListener('install', event => {
@@ -30,8 +32,10 @@ self.addEventListener('install', event => {
         '/',
         '/restaurant.html',
         '/css/styles.css',
+        'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
         '/js/main.js',
         'https://cdn.jsdelivr.net/npm/idb@2.1.3/lib/idb.min.js',
+        'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js',
         '/js/restaurant_info.js',
         '/js/dbhelper.js'  
       ]);
@@ -39,11 +43,12 @@ self.addEventListener('install', event => {
   );
 });
 
-function resPhoto(req) {
+
+function resCache(req, cacheName) {
   /**
    * Open the cache, and check if image is already there
    */
-  return caches.open(imgCache).then(cache => 
+  return caches.open(cacheName).then(cache => 
     cache.match(req.url).then(res => {
       if (res) return res;
 
@@ -72,7 +77,7 @@ self.addEventListener('fetch', event => {
      * cache process
      */
     if (reqURL.pathname.startsWith('/img/'))
-      return event.respondWith(resPhoto(event.request));
+      return event.respondWith(resCache(event.request, imgCache));
 
     /**
      * If requests contain restaurant.html, then respond with
@@ -81,6 +86,13 @@ self.addEventListener('fetch', event => {
     if (reqURL.pathname === '/restaurant.html')
       req = '/restaurant.html';
   }
+
+  /**
+   * Map requests are handled here similar to images
+   */
+  if (reqURL.hostname === 'api.tiles.mapbox.com')
+    return event.respondWith(resCache(event.request, mapCache));
+
 
   event.respondWith(
     caches.match(req).then(res => {
