@@ -1,6 +1,23 @@
 # Mobile Web Specialist Certification Course
----
+
 #### _Three Stage Course Material Project - Restaurant Reviews_
+
+## Setup the project
+```bash
+git clone https://github.com/blenderskool/mws-restaurant-stage-1
+cd mws-restaurant-stage-1
+npm install
+npm run build
+```
+
+Once the build is complete,
+```bash
+cd dist
+```
+
+Now run the local server using the methods given below.
+NOTE: API Server should also be running so that the app can fetch the data
+
 
 ## Project Overview: Stage 1
 
