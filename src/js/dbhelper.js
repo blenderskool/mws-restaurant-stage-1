@@ -272,6 +272,22 @@ class DBHelper {
   }
 
   /**
+   * Toggles the favorite state of a restaurant
+   * @param {Boolean} isFav Pass the state of favorite
+   * @param {Number} id Id of the restaurant to be affected
+   */
+  static toggleFavorite(isFav, id) {
+    fetch(`${DBHelper.DATABASE_URL}/${id}/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ is_favorite: isFav })
+    })
+    .catch(err => console.log(err));
+  }
+
+  /**
    * Restaurant page URL.
    */
   static urlForRestaurant(restaurant) {

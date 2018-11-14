@@ -259,6 +259,41 @@ nav h1 a {
   margin-right: 30px;
 }
 
+
+
+@keyframes bounce {
+  0%, 50%, 100% {transform: translateY(0);} 
+  40% {transform: translateY(-10px);} 
+  60% {transform: translateY(-5px);} 
+}
+
+.favorite {
+  cursor: pointer;
+  user-select: none;
+  float: right;
+  margin: 15px 30px 0 0;
+}
+.favorite::after {
+  content: '\e87e'; /* Outline heart */
+  font-family: 'Material Icons';
+  color: #01339C;
+  font-size: 24px;
+  transition: 0.2s ease;
+}
+.favorite.active {
+  animation: bounce 0.8s ease;
+}
+.favorite.active::after {
+  content: '\e87d'; /* Solid heart */
+}
+.favorite:hover {
+  opacity: 0.7;
+}
+.favorite:focus {
+  outline: 2px solid rgba(255, 68, 0, 0.7);
+}
+
+
 /* ====================== Restaurant Details ====================== */
 .inside header {
   position: fixed;

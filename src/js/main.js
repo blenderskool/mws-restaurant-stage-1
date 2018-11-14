@@ -157,8 +157,13 @@ let fillRestaurantsHTML = (restaurants = self.restaurants) => {
 /**
  * Create restaurant HTML.
  */
-let createRestaurantHTML = (restaurant) => {
+let createRestaurantHTML = (restaurant) => {  
   const li = document.createElement('li');
+  /**
+   * This attribute is used in events to get
+   * current restaurant id
+   */
+  li.setAttribute('data-id', restaurant.id);
   const images = DBHelper.imageUrlForRestaurant(restaurant);
 
   /**
@@ -198,13 +203,29 @@ let createRestaurantHTML = (restaurant) => {
   li.append(address);
 
   const more = document.createElement('a');
-  more.innerHTML = 'View Details';
+  more.innerHTML = 'View More';
+
   /**
    * Add aria-label to add correct information for screen readers
    */
   more.setAttribute('aria-label', `Details for ${restaurant.name}`);
   more.href = DBHelper.urlForRestaurant(restaurant);
-  li.append(more)
+  li.append(more);
+
+  /**
+   * Favorite button is added here
+   */
+  const fav = document.createElement('div');
+  fav.classList.add('favorite');
+  fav.setAttribute('role', 'button');
+  fav.tabIndex = 0;
+  if (restaurant.is_favorite)
+    fav.classList.add('active');
+
+  fav.addEventListener('click', toggleFavorite);
+  fav.addEventListener('keypress', e => { if (e.keyCode == 13) toggleFavorite.call(fav) });
+  li.append(fav);
+
 
   return li
 }
@@ -234,3 +255,14 @@ let addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 } */
+
+/**
+ * Handles the restaurant ID, favorite status
+ * before sending the request
+ */
+function toggleFavorite(restaurantID) {
+  restaurantID = typeof restaurantID == 'string' ? restaurantID : this.parentElement.getAttribute('data-id');
+  const isFav = this.classList.toggle('active');
+
+  DBHelper.toggleFavorite(isFav, restaurantID);
+}
