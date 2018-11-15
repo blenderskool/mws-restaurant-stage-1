@@ -29,7 +29,7 @@ a:hover, a:focus {
 a:focus {
   text-decoration: underline;
 }
-a:focus, select:focus {
+a:focus, select:focus, button:focus {
   outline: 2px solid rgba(255, 68, 0, 0.7);
 }
 a img{
@@ -267,29 +267,29 @@ nav h1 a {
   60% {transform: translateY(-5px);} 
 }
 
-.favorite {
+#restaurants-list li .favorite {
   cursor: pointer;
   user-select: none;
   float: right;
   margin: 15px 30px 0 0;
 }
-.favorite::after {
-  content: '\e87e'; /* Outline heart */
-  font-family: 'Material Icons';
+#restaurants-list li .favorite::after {
+  content: '\f1a1'; /* Outline heart */
+  font-family: 'Ionicons';
   color: #01339C;
   font-size: 24px;
   transition: 0.2s ease;
 }
-.favorite.active {
+#restaurants-list li .favorite.active {
   animation: bounce 0.8s ease;
 }
-.favorite.active::after {
-  content: '\e87d'; /* Solid heart */
+#restaurants-list li .favorite.active::after {
+  content: '\f308'; /* Solid heart */
 }
-.favorite:hover {
+#restaurants-list li .favorite:hover {
   opacity: 0.7;
 }
-.favorite:focus {
+#restaurants-list li .favorite:focus {
   outline: 2px solid rgba(255, 68, 0, 0.7);
 }
 
@@ -435,6 +435,36 @@ Did not use class selectors to not deal with JS */
 #reviews-list li p:last-child {
   margin: 20px 0 0;
   font-size: 11pt;
+}
+
+.fab-favorite {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  position: fixed;
+  /* This z-index makes fab show up above all elements */
+  z-index: 10002;
+  bottom: 40px;
+  right: 40px;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 5px 30px rgba(20, 20, 20, 0.2);
+  transition: all 0.2s ease;
+}
+.fab-favorite:hover {
+  transform: scale(1.08);
+}
+.fab-favorite::after {
+  content: '\f1a1';
+  font-family: 'Ionicons';
+  display: block;
+  font-size: 24px;
+  color: #01339C;
+}
+.fab-favorite.active::after {
+  content: '\f308';
 }
 
 /* Media queries */

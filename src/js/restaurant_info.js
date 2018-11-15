@@ -100,6 +100,9 @@ let fillRestaurantHTML = (restaurant = self.restaurant) => {
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
+  const btnFav = document.getElementById('btnFav');
+  if (restaurant.is_favorite) btnFav.classList.add('active');
+
   // fill operating hours
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
@@ -198,4 +201,8 @@ let getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+function toggleFavorite(el) {  
+  DBHelper.toggleFavorite(el.classList.toggle('active'), getParameterByName('id'));
 }
