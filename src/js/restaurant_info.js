@@ -144,13 +144,38 @@ let fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
     container.appendChild(noReviews);
-    return;
   }
-  const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
-  });
-  container.appendChild(ul);
+  else {
+    const ul = document.getElementById('reviews-list');
+    reviews.forEach(review => {
+      ul.appendChild(createReviewHTML(review));
+    });
+    container.appendChild(ul);
+  }
+
+  /**
+   * Add review section
+   */
+  const formReview = document.createElement('form');
+
+
+  const inpName = document.createElement('input');
+  inpName.placeholder = 'Your name';
+
+  const comments = document.createElement('textarea');
+  comments.rows = 3;
+  comments.placeholder = 'Your review';
+  
+  const btnAddReview = document.createElement('button');
+  btnAddReview.classList.add('primary');
+  btnAddReview.type = 'submit';
+  btnAddReview.innerText = 'Add your review';
+
+  formReview.appendChild(inpName);
+  formReview.appendChild(comments);
+  formReview.appendChild(btnAddReview);
+
+  container.appendChild(formReview);
 }
 
 /**
