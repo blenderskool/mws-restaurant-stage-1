@@ -277,12 +277,31 @@ class DBHelper {
    * @param {Number} id Id of the restaurant to be affected
    */
   static toggleFavorite(isFav, id) {
+    const options = { is_favorite: isFav };
+
+    /**
+     * Makes a PUT request to the server to set the favorite status
+     */
     fetch(`${DBHelper.DATABASE_URL}/${id}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ is_favorite: isFav })
+      body: JSON.stringify(options)
+    })
+    .catch(err => console.log(err));
+
+    /**
+     * Also set the favorite status in the IDB, so that it can be fetched when offline
+     */
+    DBHelper.openDatabase()
+    .then(db => {
+      if (!db) return;
+
+      const store = db.transaction('restaurants', 'readwrite').objectStore('restaurants');
+
+      store.get(parseInt(id))
+      .then(restaurant => store.put({ ...restaurant, ...options }))
     })
     .catch(err => console.log(err));
   }
@@ -362,3 +381,25 @@ let registerSW = () => {
   navigator.serviceWorker.register('/sw.js');
 }
 
+/**
+ * Event is fired when the user goes online
+ */
+window.addEventListener('online', () => {
+  idb.open('restaurant-reviews', 1)
+  .then(db => {
+    if (!db) return;
+
+    const store = db.transaction('restaurants').objectStore('restaurants');
+
+    return store.getAll();
+  })
+  .then(restaurants =>  {
+    if (!restaurants) return;
+  
+    /**
+     * Send the favorite data of every restaurant to the server
+     */
+    restaurants.forEach(restaurant => DBHelper.toggleFavorite(restaurant.is_favorite, restaurant.id))
+  });
+
+});
