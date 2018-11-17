@@ -9,7 +9,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}/`;
   }
 
   /**
@@ -17,7 +17,7 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
+    xhr.open('GET', DBHelper.DATABASE_URL+'restaurants');
 
     /**
      * Request was successfull
@@ -40,7 +40,7 @@ class DBHelper {
    */
   static fetchRestaurantById(id, callback) {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `${DBHelper.DATABASE_URL}/${id}`);
+    xhr.open('GET', `${DBHelper.DATABASE_URL}restaurants/${id}`);
 
     /**
      * Request was successfull
@@ -282,7 +282,7 @@ class DBHelper {
     /**
      * Makes a PUT request to the server to set the favorite status
      */
-    fetch(`${DBHelper.DATABASE_URL}/${id}/`, {
+    fetch(`${DBHelper.DATABASE_URL}restaurants/${id}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -304,6 +304,42 @@ class DBHelper {
       .then(restaurant => store.put({ ...restaurant, ...options }))
     })
     .catch(err => console.log(err));
+  }
+
+  /**
+   * Gets the reviews for specific restaurant
+   * @param {Number|String} id ID of the restaurant to get the reviews for
+   * @param {*} callback 
+   */
+  static fetchReviewdById(id, callback) {
+    fetch(`${DBHelper.DATABASE_URL}reviews?restaurant_id=${id}`)
+    .then(res => res.json())
+    .then(data => callback(null, data))
+    .catch(err => callback(err));
+  }
+
+  /**
+   * Sends a review to the server
+   * @param {Object} review Object containing review data
+   */
+  static addReview(review) {
+
+    /**
+     * Makes a PUT request to the server to set the favorite status
+     */
+    return new Promise((resolve, reject) => {
+      fetch(`${DBHelper.DATABASE_URL}reviews/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(review)
+      })
+      .then(res => res.json())
+      .then(resolve)
+      .catch(reject);
+    });
+
   }
 
   /**

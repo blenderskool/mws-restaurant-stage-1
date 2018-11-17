@@ -75,6 +75,18 @@ let fetchRestaurantFromURL = (callback) => {
       fillRestaurantHTML();
       callback(null, restaurant)
     });
+
+    /**
+     * Gets the reviews from the server
+     */
+    DBHelper.fetchReviewdById(id, (error, reviews) => {
+      self.reviews = reviews;
+      if (!reviews) return console.log(error);
+
+      // fill reviews
+      fillReviewsHTML();
+    });
+
   }
 }
 
@@ -107,8 +119,6 @@ let fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
 }
 
 /**
@@ -134,7 +144,7 @@ let fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours)
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-let fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+let fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
@@ -158,20 +168,60 @@ let fillReviewsHTML = (reviews = self.restaurant.reviews) => {
    */
   const formReview = document.createElement('form');
 
-
   const inpName = document.createElement('input');
   inpName.placeholder = 'Your name';
+  inpName.required = true;
+
+  const inpRating = document.createElement('input');
+  inpRating.placeholder = 'Your rating (out of 5)';
+  inpRating.type = 'number';
+  inpRating.max = 5;
+  inpRating.min = 1;
+  inpRating.required = true;
 
   const comments = document.createElement('textarea');
   comments.rows = 3;
   comments.placeholder = 'Your review';
+  comments.required = true;
   
   const btnAddReview = document.createElement('button');
   btnAddReview.classList.add('primary');
   btnAddReview.type = 'submit';
   btnAddReview.innerText = 'Add your review';
 
+  /**
+   * Review submit event
+   */
+  formReview.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Reject submission if there's empty whitespace
+    if (!(inpName.value.trim() && comments.value.trim())) return;
+    
+    const review = {
+      restaurant_id: getParameterByName('id'),
+      name: inpName.value,
+      rating: inpRating.value,
+      comments: comments.value
+    };
+
+    DBHelper.addReview(review)
+    .then(review => {
+      document.getElementById('reviews-list').appendChild(createReviewHTML(review));
+
+      // Reset the form once the review was added successfully
+      formReview.reset();
+    })
+    .catch(err => {
+      // Error handling can be done here
+      console.log(err);
+    })
+    
+  });
+
+
   formReview.appendChild(inpName);
+  formReview.appendChild(inpRating);
   formReview.appendChild(comments);
   formReview.appendChild(btnAddReview);
 
@@ -188,7 +238,7 @@ let createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = new Date(review.createdAt).toDateString();
   li.appendChild(date);
 
   const rating = document.createElement('p');
