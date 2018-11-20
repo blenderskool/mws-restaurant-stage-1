@@ -218,9 +218,11 @@ let createRestaurantHTML = (restaurant) => {
   const fav = document.createElement('div');
   fav.classList.add('favorite');
   fav.setAttribute('role', 'button');
+  fav.setAttribute('aria-label', 'Set favorite');
   fav.tabIndex = 0;
   if (restaurant.is_favorite)
     fav.classList.add('active');
+    fav.setAttribute('aria-label', 'Remove from favorites');
 
   fav.addEventListener('click', toggleFavorite);
   fav.addEventListener('keypress', e => { if (e.keyCode == 13) toggleFavorite.call(fav) });

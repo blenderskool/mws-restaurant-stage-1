@@ -171,15 +171,18 @@ let fillReviewsHTML = (reviews = self.reviews) => {
   const inpName = document.createElement('input');
   inpName.placeholder = 'Your name';
   inpName.required = true;
+  inpName.setAttribute('aria-label', 'Enter your name');
 
   const inpRating = document.createElement('input');
   inpRating.placeholder = 'Your rating (out of 5)';
+  inpRating.setAttribute('aria-label', 'Enter your rating (out of 5)');
   inpRating.type = 'number';
   inpRating.max = 5;
   inpRating.min = 1;
   inpRating.required = true;
 
   const comments = document.createElement('textarea');
+  comments.setAttribute('aria-label', 'Enter your review');
   comments.rows = 3;
   comments.placeholder = 'Your review';
   comments.required = true;
@@ -278,6 +281,10 @@ let getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-function toggleFavorite(el) {  
-  DBHelper.toggleFavorite(el.classList.toggle('active'), getParameterByName('id'));
+function toggleFavorite(el) {
+  const isActive = el.classList.toggle('active');
+  DBHelper.toggleFavorite(isActive, getParameterByName('id'));
+
+  // ARIA label is updated
+  el.setAttribute('aria-label', isActive ? 'Remove restaurant from favorites' : 'Set restaurant favorite');
 }
