@@ -61,7 +61,7 @@ let fetchRestaurantFromURL = (callback) => {
     callback(null, self.restaurant)
     return;
   }
-  const id = getParameterByName('id');
+  const id = parseInt(getParameterByName('id'));
   if (!id) { // no id found in URL
     error = 'No restaurant id in URL'
     callback(error, null);
@@ -199,7 +199,7 @@ let fillReviewsHTML = (reviews = self.reviews) => {
     if (!(inpName.value.trim() && comments.value.trim())) return;
     
     const review = {
-      restaurant_id: getParameterByName('id'),
+      restaurant_id: parseInt(getParameterByName('id')),
       name: inpName.value,
       rating: inpRating.value,
       comments: comments.value
@@ -238,7 +238,7 @@ let createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = new Date(review.createdAt).toDateString();
+  date.innerHTML = review.createdAt ? new Date(review.createdAt).toDateString() : 'Stored offline';
   li.appendChild(date);
 
   const rating = document.createElement('p');

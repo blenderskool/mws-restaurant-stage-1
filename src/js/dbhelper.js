@@ -314,8 +314,47 @@ class DBHelper {
   static fetchReviewdById(id, callback) {
     fetch(`${DBHelper.DATABASE_URL}reviews?restaurant_id=${id}`)
     .then(res => res.json())
-    .then(data => callback(null, data))
-    .catch(err => callback(err));
+    .then(reviews => {
+
+      /**
+       * Store the review in the IDB for offline use
+       */
+      DBHelper.openDatabase()
+      .then(db => {
+        if (!db) return;
+
+        const store = db.transaction('reviews', 'readwrite').objectStore('reviews');
+
+        reviews.forEach(review => store.put(review));
+      });
+
+      callback(null, reviews);
+    })
+    .catch(err => {
+      /**
+       * If there was error to fetch reviews from the server, then get the reviews
+       * from the IDB
+       */
+      DBHelper.openDatabase()
+      .then(db => {
+        if (!db) return;
+
+        const store = db.transaction('reviews').objectStore('reviews');
+
+        return store.getAll();
+      })
+      .then(reviews => {
+        /**
+         * Filter reviews based on restaurant ID
+         */
+        callback(null, reviews.filter(review => review.restaurant_id === id));
+      })
+      .catch(err => {
+        callback(err);
+      });
+
+    });
+
   }
 
   /**
@@ -336,8 +375,37 @@ class DBHelper {
         body: JSON.stringify(review)
       })
       .then(res => res.json())
-      .then(resolve)
-      .catch(reject);
+      .then(review => {
+        /**
+         * Review is also added to the IDB
+         */
+        DBHelper.openDatabase()
+        .then(db => {
+          if (!db) return;
+
+          const store = db.transaction('reviews', 'readwrite').objectStore('reviews');
+          return store.put(review);
+        });
+
+        resolve(review);
+      })
+      .catch(err => {
+        /**
+         * If the request has failed, then save the review in the IDB
+         * with few pre-defined values that would have been available through server
+         */
+        review = { ...review, createdAt: null, id: Math.floor(Math.random() * Math.floor(10000)) };
+        DBHelper.openDatabase()
+        .then(db => {
+          if (!db) return;
+
+          const store = db.transaction('reviews', 'readwrite').objectStore('reviews');
+          return store.put(review);
+        })
+        .then(() => resolve(review))
+        .catch(reject);
+
+      });
     });
 
   }
@@ -402,6 +470,10 @@ class DBHelper {
 
       upgradeDB.createObjectStore('neighborhoods');
       upgradeDB.createObjectStore('cuisines');
+      
+      upgradeDB.createObjectStore('reviews', {
+        keyPath: 'id'
+      });
     });
   }
 
@@ -421,6 +493,10 @@ let registerSW = () => {
  * Event is fired when the user goes online
  */
 window.addEventListener('online', () => {
+
+  /**
+   * Send favorite data to the server
+   */
   idb.open('restaurant-reviews', 1)
   .then(db => {
     if (!db) return;
@@ -438,4 +514,39 @@ window.addEventListener('online', () => {
     restaurants.forEach(restaurant => DBHelper.toggleFavorite(restaurant.is_favorite, restaurant.id))
   });
 
+  /**
+   * Send the review data to the server
+   */
+  idb.open('restaurant-reviews', 1)
+  .then(db => {
+    if (!db) return;
+
+    const store = db.transaction('reviews', 'readwrite').objectStore('reviews');
+
+    store.getAll()
+    .then(reviews => {
+      if (!reviews) return;
+
+      reviews.forEach(review => {
+        if (!review.createdAt) {
+          /**
+           * Delete the old review
+           */
+          store.delete(review.id);
+
+          /**
+           * Clean the review with redundant values
+           */
+          review.createdAt = undefined;
+          review.id = undefined;
+
+          /**
+           * Send the review data, and store the server response in the IDB again 
+           */
+          DBHelper.addReview(review);
+        }
+      });
+    });
+
+  });
 });
