@@ -489,6 +489,22 @@ let registerSW = () => {
   navigator.serviceWorker.register('/sw.js');
 }
 
+let handleOffline = (isOnline) => {
+  /**
+   * Class is added to HTML tag as adding filters to body makes fixed elements
+   * no longer fixed!
+   */
+  const html = document.getElementsByTagName('html')[0];
+
+  if (isOnline) {
+    html.classList.remove('offline-bw');
+  }
+  else {
+    html.classList.add('offline-bw');
+  }
+}
+handleOffline(navigator.onLine);
+
 /**
  * Event is fired when the user goes online
  */
@@ -549,4 +565,11 @@ window.addEventListener('online', () => {
     });
 
   });
+
+  handleOffline(true);
+
+});
+
+window.addEventListener('offline', () => {
+  handleOffline();
 });

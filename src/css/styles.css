@@ -11,7 +11,8 @@ body,td,th,p{
 body {
 	background-color: #fdfdfd;
 	margin: 0;
-	position:relative;
+  position:relative;
+  transition: filter 0.2s ease;
 }
 ul, li {
 	font-family: 'Nunito', Arial, Helvetica, sans-serif;
@@ -55,6 +56,10 @@ input, textarea {
 }
 input:focus, textarea:focus {
   border: 2px solid #01339C;
+}
+
+.offline-bw {
+  filter: grayscale(1);
 }
 
 #maincontent {
@@ -382,7 +387,7 @@ nav h1 a {
   width: 44%;
 }
 #reviews-container {
-  padding: 15px 3% 80px;
+  padding: 15px 3% 110px;
 }
 #reviews-container h3 {
   color: #01339C;
