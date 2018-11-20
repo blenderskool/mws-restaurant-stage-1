@@ -49,9 +49,9 @@ gulp.task('html', function() {
 });
 
 /**
- * Prepares the images for production
+ * Prepares the static files for production
  */
-gulp.task('images', function() {
+gulp.task('static', function() {
   /**
    * WebP image files created
    */
@@ -70,9 +70,15 @@ gulp.task('images', function() {
    */
   gulp.src('src/icons/**/*')
     .pipe(gulp.dest('dist/icons'));
+
+  /**
+   * Copy the icon fonts
+   */
+  gulp.src('src/font/**/*')
+    .pipe(gulp.dest('dist/font'));
 });
 
-gulp.task('default', ['scripts', 'html', 'styles', 'images'], function() {
+gulp.task('default', ['scripts', 'html', 'styles', 'static'], function() {
   gulp.src('src/*.{json,ico}')
     .pipe(gulp.dest('dist'));
 });

@@ -1,6 +1,8 @@
 @charset "utf-8";
 /* CSS Document */
-
+html {
+  transition: filter 0.2s ease;
+}
 body,td,th,p{
 	font-family: 'Nunito', Arial, Helvetica, sans-serif;
 	font-size: 10pt;
@@ -12,7 +14,6 @@ body {
 	background-color: #fdfdfd;
 	margin: 0;
   position:relative;
-  transition: filter 0.2s ease;
 }
 ul, li {
 	font-family: 'Nunito', Arial, Helvetica, sans-serif;
@@ -296,17 +297,17 @@ nav h1 a {
   margin: 15px 30px 0 0;
 }
 #restaurants-list li .favorite::after {
-  content: '\f1a1'; /* Outline heart */
-  font-family: 'Ionicons';
+  content: '\e800'; /* Outline heart */
+  font-family: 'icons';
   color: #01339C;
-  font-size: 24px;
+  font-size: 20px;
   transition: 0.2s ease;
 }
 #restaurants-list li .favorite.active {
   animation: bounce 0.8s ease;
 }
 #restaurants-list li .favorite.active::after {
-  content: '\f308'; /* Solid heart */
+  content: '\e801'; /* Solid heart */
 }
 #restaurants-list li .favorite:hover {
   opacity: 0.7;
@@ -479,14 +480,14 @@ Did not use class selectors to not deal with JS */
   transform: scale(1.08);
 }
 .fab-favorite::after {
-  content: '\f1a1';
-  font-family: 'Ionicons';
+  content: '\e800';
+  font-family: 'icons';
   display: block;
-  font-size: 24px;
+  font-size: 20px;
   color: #01339C;
 }
 .fab-favorite.active::after {
-  content: '\f308';
+  content: '\e801';
 }
 
 /* Media queries */

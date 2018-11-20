@@ -36,11 +36,13 @@ self.addEventListener('install', event => {
         '/js/main.js',
         'https://cdn.jsdelivr.net/npm/idb@2.1.3/lib/idb.min.js',
         'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js',
-        // Ionicons fonts are cached
-        'https://unpkg.com/ionicons@4.4.6/dist/css/ionicons.min.css',
-        'https://unpkg.com/ionicons@4.4.6/dist/fonts/ionicons.ttf?v=4.4.5',
-        'https://unpkg.com/ionicons@4.4.6/dist/fonts/ionicons.svg?v=4.4.5#Ionicons',
-
+        // Icon fonts are cached
+        '/css/icons.css',
+        '/font/icons.eot',
+        '/font/icons.woff2',
+        '/font/icons.woff',
+        '/font/icons.ttf',
+        '/font/icons.svg',
         '/js/restaurant_info.js',
         '/js/dbhelper.js'  
       ]);
@@ -95,8 +97,8 @@ self.addEventListener('fetch', event => {
   /**
    * Map requests are handled here similar to images
    */
-  if (reqURL.hostname === 'api.tiles.mapbox.com')
-    return event.respondWith(resCache(event.request, mapCache));
+  // if (reqURL.hostname === 'api.tiles.mapbox.com')
+    // return event.respondWith(resCache(event.request, mapCache));
 
 
   event.respondWith(
